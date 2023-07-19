@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
             self.faceright = False
         else:
             self.direction.x = 0
-        if key[pygame.K_SPACE]:
+        if key[pygame.K_SPACE] or key[pygame.K_UP]:
             self.jump_time += 1
             if self.jump_time < 5 and self.climb_time<3: #define o tempo de pulo e escalada maximo do player
                 self.jump()
@@ -74,7 +74,7 @@ class Player(pygame.sprite.Sprite):
     def get_status(self):
         if self.direction.y > 0:
             self.status = "Fall"
-        elif self.direction.y > 0:
+        elif self.direction.y < 0 and not(self.onleft) and not(self.onright):
             self.status = "Jump"
         else: 
             self.status = 'Run'
@@ -87,19 +87,18 @@ class Player(pygame.sprite.Sprite):
         self.frame_index+=self.animation_speed
         if self.frame_index > len(animation):
             self.frame_index = 0
+        
         image = animation[int(self.frame_index)]
         if self.faceright:
             self.image = image
         else:
             self.image = pygame.transform.flip(image, True, False)
         if self.onright:
-            self.image = pygame.transform.rotate(image, 70)
+            self.image = pygame.transform.rotate(image, 60)
         elif self.onleft:
-            image = pygame.transform.rotate(image, 250)
+            image = pygame.transform.rotate(image, 240)
             self.image = pygame.transform.flip(image, False, True)
-            
-           
-
+    
     def out_of_bounds(self):
         if self.rect.top > screen_height:
             self.player_death = True
@@ -111,5 +110,8 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.out_of_bounds()
         if self.jump_time>1:
+            self.onleft = False
+            self.onright = False
+
             self.onleft = False
             self.onright = False
