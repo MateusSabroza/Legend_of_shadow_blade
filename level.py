@@ -47,14 +47,16 @@ class Level:
         for sprite in self.tiles.sprites():
             if sprite.rect.colliderect(player.rect):
                 if player.direction.x < 0:
+                    player.onleft = True
                     player.rect.left = sprite.rect.right
                     if player.climb_time < 10:
                         player.jump_time = 0
                 elif player.direction.x > 0:
+                    player.onright = True
                     player.rect.right = sprite.rect.left
                     if player.climb_time < 10:
                         player.jump_time = 0
-
+        
     def vertical_movement_collision(self):
         player = self.player.sprite
         player.apply_gravity()
@@ -63,14 +65,14 @@ class Level:
             if sprite.rect.colliderect(player.rect):
                 if player.direction.y < 0:  # se ele encosta no teto
                     player.rect.top = sprite.rect.bottom
-                    player.climb_time += 1
+                    #player.climb_time += 1
                     if player.climb_time < 10:
                         player.direction.y = 0
                 elif player.direction.y > 0:  # se ele cai no chão
                     player.rect.bottom = sprite.rect.top
                     player.jump_time = 0
                     player.climb_time = 0
-                player.direction.y = 0
+                    player.direction.y = 0
 
     def run(self):
         # atualiza a posição do tile no eixo x
