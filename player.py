@@ -27,8 +27,8 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
         # player movement
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 6
-        self.gravity = 0.8
+        self.speed = 4
+        self.gravity = 0.6
         self.jump_speed = -15
         self.jump_time = 0
         self.climb_time=0
@@ -36,6 +36,7 @@ class Player(pygame.sprite.Sprite):
         self.faceright = True
         self.onleft = False
         self.onright = False
+        self.death = False
         
     def import_character_assets(self):
         character_path = 'graphics//hero//Martial Hero 2.0//'
@@ -91,11 +92,24 @@ class Player(pygame.sprite.Sprite):
             self.image = image
         else:
             self.image = pygame.transform.flip(image, True, False)
-        if self.climb_time!=0:
-            self.image = pygame.transform.rotate(image, 90)
+        if self.onright:
+            self.image = pygame.transform.rotate(image, 70)
+        elif self.onleft:
+            image = pygame.transform.rotate(image, 250)
+            self.image = pygame.transform.flip(image, False, True)
+            
            
 
+    def out_of_bounds(self):
+        if self.rect.top > screen_height:
+            self.player_death = True
+    
+    
     def update(self):
         # metodo para atualizar o player
         self.get_input()
         self.animate()
+        self.out_of_bounds()
+        if self.jump_time>1:
+            self.onleft = False
+            self.onright = False
