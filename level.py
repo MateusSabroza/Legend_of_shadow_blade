@@ -43,26 +43,32 @@ class Level:
     def horizontal_movement_collision(self):
         player = self.player.sprite
         player.rect.x += player.direction.x*player.speed
-        # checa se o player colidiu com algum tile
         for sprite in self.tiles.sprites():
+            # checa se o player colidiu com algum tile
             if sprite.rect.colliderect(player.rect):
+                player.onleft = False
+                player.onright = False
                 if player.direction.x < 0:
                     player.onleft = True
+                    #player.onright = False
                     player.rect.left = sprite.rect.right
                     if player.climb_time < 10:
                         player.jump_time = 0
                 elif player.direction.x > 0:
                     player.onright = True
+                    #player.onleft = False
                     player.rect.right = sprite.rect.left
                     if player.climb_time < 10:
                         player.jump_time = 0
-        
+
     def vertical_movement_collision(self):
         player = self.player.sprite
         player.apply_gravity()
-        # checa se o player colidiu com algum tile
         for sprite in self.tiles.sprites():
+            # checa se o player colidiu com algum tile
             if sprite.rect.colliderect(player.rect):
+                player.onleft = False
+                player.onright = False
                 if player.direction.y < 0:  # se ele encosta no teto
                     player.rect.top = sprite.rect.bottom
                     #player.climb_time += 1
@@ -85,3 +91,4 @@ class Level:
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.player.draw(self.display_surface)
+
