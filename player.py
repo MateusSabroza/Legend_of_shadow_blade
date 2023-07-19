@@ -2,7 +2,7 @@ import pygame
 import sys
 from settings import *
 from os import walk
-
+import random
 
 def import_folder(path):
     surface_list = []
@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         
         self.import_character_assets()
         self.frame_index = 0
-        self.animation_speed = 0.15
+        self.animation_speed = 0.1
         self.image = self.animations['Idle'][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
         # player movement
@@ -37,6 +37,8 @@ class Player(pygame.sprite.Sprite):
         self.onleft = False
         self.onright = False
         self.death = False
+        self.attack_time = 0
+        self.attack_bool = False
         
     def import_character_assets(self):
         character_path = 'graphics//hero//Martial Hero 2.0//'
@@ -62,6 +64,8 @@ class Player(pygame.sprite.Sprite):
             self.jump_time += 1
             if self.jump_time < 5 and self.climb_time<3: #define o tempo de pulo e escalada maximo do player
                 self.jump()
+        if key[pygame.K_KP_ENTER] and not(self.attack_bool):
+            self.attack()
 
     def apply_gravity(self):
         # metodo para aplicar a gravidade
@@ -70,15 +74,24 @@ class Player(pygame.sprite.Sprite):
 
     def jump(self):
         self.direction.y = self.jump_speed
+    
+    def attack(self):
+        self.direction.y = self.jump_speed/1.8
+        self.attack_time+=1
+        self.attack_bool = True
+        
 
     def get_status(self):
-        if self.direction.y > 0:
+        if self.attack_bool:
+            i = self.attack_time%2 + 1
+            self.status = "Attack"+str(i)
+        elif self.direction.y > 0:
             self.status = "Fall"
         elif self.direction.y < 0 and not(self.onleft) and not(self.onright):
             self.status = "Jump"
         else: 
             self.status = 'Run'
-        if self.direction == (0,0):
+        if self.direction == (0,0) and not(self.attack_bool):
             self.status = "Idle"
         
     def animate(self):
@@ -86,6 +99,8 @@ class Player(pygame.sprite.Sprite):
         animation = self.animations[self.status]
         self.frame_index+=self.animation_speed
         if self.frame_index > len(animation):
+            if self.status == 'Attack1' or self.status == 'Attack2':
+                self.attack_bool = False
             self.frame_index = 0
         
         image = animation[int(self.frame_index)]
@@ -113,5 +128,3 @@ class Player(pygame.sprite.Sprite):
             self.onleft = False
             self.onright = False
 
-            self.onleft = False
-            self.onright = False
