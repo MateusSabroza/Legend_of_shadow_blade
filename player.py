@@ -2,7 +2,6 @@ import pygame
 import sys
 from settings import *
 from os import walk
-import random
 
 def import_folder(path):
     surface_list = []
@@ -39,6 +38,7 @@ class Player(pygame.sprite.Sprite):
         self.death = False
         self.attack_time = 0
         self.attack_bool = False
+        self.stamina = 3
         
     def import_character_assets(self):
         character_path = 'graphics//hero//Martial Hero 2.0//'
@@ -64,7 +64,7 @@ class Player(pygame.sprite.Sprite):
             self.jump_time += 1
             if self.jump_time < 5 and self.climb_time<3: #define o tempo de pulo e escalada maximo do player
                 self.jump()
-        if key[pygame.K_KP_ENTER] and not(self.attack_bool):
+        if key[pygame.K_KP_ENTER] and not(self.attack_bool) and self.stamina>0:
             self.attack()
 
     def apply_gravity(self):
@@ -76,6 +76,7 @@ class Player(pygame.sprite.Sprite):
         self.direction.y = self.jump_speed
     
     def attack(self):
+        self.stamina-=1
         self.direction.y = self.jump_speed/1.5
         self.attack_time+=1
         self.attack_bool = True
@@ -126,5 +127,9 @@ class Player(pygame.sprite.Sprite):
         self.out_of_bounds()
         if self.jump_time>1:
             self.onleft = False
-            self.onright = False
+            self.onright = False 
+        if self.stamina<4:    
+            self.stamina+=0.01
+
+
 
