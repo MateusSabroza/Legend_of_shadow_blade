@@ -76,7 +76,7 @@ class Player(pygame.sprite.Sprite):
         self.direction.y = self.jump_speed
     
     def attack(self):
-        self.direction.y = self.jump_speed/1.8
+        self.direction.y = self.jump_speed/1.5
         self.attack_time+=1
         self.attack_bool = True
         
