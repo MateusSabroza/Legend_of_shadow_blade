@@ -10,6 +10,7 @@ class Level:
         self.display_surface = surface
         self.setup_level(level_data)
         self.world_shift = 0  # movimento do personagem
+        self.death = False
 
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
@@ -80,6 +81,25 @@ class Level:
                     player.climb_time = 0
                     player.direction.y = 0
 
+    def show_health_stamina(self, x, y, surface):
+        player = self.player.sprite
+        # Health bar dimensions
+        bar_width = 300
+        bar_height = 20
+        # Calculate the width of the health bar based on the player's current health
+        health_percentage = player.actual_health / player.max_health
+        health_bar_width = int(bar_width * health_percentage)
+        stamina_percentage = player.stamina / player.max_stamina
+        stamina_bar_width = int(bar_width/2 * stamina_percentage)
+        # Draw the background of the health bar (red color)
+        pygame.draw.rect(surface, (255, 0, 0), (x, y, bar_width, bar_height))
+        pygame.draw.rect(surface, (0, 0, 0), (x, y+bar_height, bar_width/2, bar_height))
+        # Draw the current health level (green color)
+        pygame.draw.rect(surface, (0, 255, 0), (x, y, health_bar_width, bar_height))
+        pygame.draw.rect(surface, (0, 0, 255), (x, y+bar_height, stamina_bar_width, bar_height))
+        if player.death:
+            self.death = True
+    
     def run(self):
         # atualiza a posição do tile no eixo x
         self.tiles.update(self.world_shift)
@@ -90,5 +110,5 @@ class Level:
         # chamado dos metodos de colisao
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
+        self.show_health_stamina(10,50,self.display_surface)
         self.player.draw(self.display_surface)
-
