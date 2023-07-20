@@ -3,7 +3,7 @@ from sys import exit
 from settings import *
 from tiles import Tile
 from level import Level
-
+import random
 
 # pygame setup
 FPS = 60
@@ -17,7 +17,8 @@ background = pygame.transform.scale(pygame.image.load(
     "graphics/bg.png").convert(), (screen_width_v, screen_height_v+40))
 BG = pygame.transform.scale(pygame.image.load(
     "graphics/Background1.jpeg").convert(), (screen_width_v, screen_height_v))
-
+lista_de_mortes = ['Foi pro vasco!','Foi de arrasta!','Foi de americanas!','Foi de rainha Elizabeth!',
+                   'Wasted', 'Se fudeu!','Reprovou em cálculo 1!']
 
 # button setup
 
@@ -72,14 +73,39 @@ def play():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     main_menu()
-
+        if level.death:
+            after_life()
+                
+                    
         pygame.display.update()
         clock.tick(FPS)
-# menu loop
+
+def after_life():
+    frase = lista_de_mortes[random.randint(0,len(lista_de_mortes)+1)]
+    screen.fill('black')
+    while True:
+        screen.blit(BG, (0,0))
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        QUIT_BUTTON = Button(image=pygame.image.load(
+            "graphics/Rect.png"), pos=(520, 650), text_input="QUIT")
+        MENU_TEXT = get_font(50).render(frase, True, "#ff1900")
+        MENU_RECT = MENU_TEXT.get_rect(center=(645, 80))
+        screen.blit(MENU_TEXT, MENU_RECT)
+        QUIT_BUTTON.changeColor(MENU_MOUSE_POS)
+        QUIT_BUTTON.update(screen)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    exit()
+        pygame.display.update()
 
 
 def main_menu():
@@ -111,3 +137,4 @@ def main_menu():
 
 
 main_menu()
+
