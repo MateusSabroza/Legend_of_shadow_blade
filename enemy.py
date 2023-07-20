@@ -74,8 +74,8 @@ class Enemy(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(image, True, False)
             
     def move(self):
-        if random.randint(1,30)==1:
-            self.direction.x*=-1
+        #if random.randint(1,30)==1:
+            #self.direction.x*=-1
         if self.direction.x<0:
             self.faceright = False
         elif self.direction.x>0:
