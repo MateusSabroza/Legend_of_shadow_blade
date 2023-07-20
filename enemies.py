@@ -10,7 +10,11 @@ from sys import exit
 from settings import *
 from os import walk
 
-class Player(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
         self.initial_pos = pos
+        self.frame.index=
+        
+        
+        
