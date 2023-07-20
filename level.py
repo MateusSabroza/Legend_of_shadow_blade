@@ -100,7 +100,12 @@ class Level:
                     enemy.direction.y = 0
             for wall in self.inv_wall.sprites():
                 if wall.rect.colliderect(enemy.rect):
-                    enemy.direction.x*=-1
+                    if enemy.follow:
+                        enemy.direction.x=0
+                    else:
+                        enemy.direction.x*=-1
+            if enemy.direction.x==0 and not(enemy.follow):
+                    enemy.direction.x = 1
     
     def collision_enemy(self):
         player = self.player.sprite
