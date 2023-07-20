@@ -1,5 +1,4 @@
 import pygame
-from sys import exit
 from settings import *
 from os import walk
 
@@ -18,7 +17,6 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
         self.initial_pos = pos
-        
         self.import_character_assets()
         self.frame_index = 0
         self.animation_speed = 0.1
@@ -42,6 +40,7 @@ class Player(pygame.sprite.Sprite):
         self.stamina = self.max_stamina
         self.max_health = 100
         self.actual_health = self.max_health
+        self.taking_dmg = False
         
     def import_character_assets(self):
         character_path = 'graphics//hero//Martial Hero 2.0//'
@@ -50,7 +49,7 @@ class Player(pygame.sprite.Sprite):
         for animation in self.animations.keys():
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
-            
+        #print(self.animations)
     def get_input(self):
         # metodo para pegar o input do teclado
         key = pygame.key.get_pressed()
@@ -67,7 +66,7 @@ class Player(pygame.sprite.Sprite):
             self.jump_time += 1
             if self.jump_time < 5 and self.climb_time<3: #define o tempo de pulo e escalada maximo do player
                 self.jump()
-        if key[pygame.K_KP_ENTER] and not(self.attack_bool) and self.stamina>=1:
+        if key[pygame.K_KP_ENTER] and not(self.attack_bool) and self.stamina>1:
             self.attack()
         if key[pygame.K_i]:
             self.actual_health = -1
@@ -85,11 +84,16 @@ class Player(pygame.sprite.Sprite):
         self.direction.y = self.jump_speed/1.5
         self.attack_time+=1
         self.attack_bool = True
-        
+    
+    def take_dmg(self):
+        self.actual_health-=1
+        self.taking_dmg = True
 
     def get_status(self):
-        if self.attack_bool:
-            i = self.attack_time%2 + 1
+        if self.taking_dmg:
+            self.status = 'Take hit'
+        elif self.attack_bool:
+            i = self.attack_time % 2 + 1
             self.status = "Attack"+str(i)
         elif self.direction.y > 0:
             self.status = "Fall"
@@ -107,6 +111,8 @@ class Player(pygame.sprite.Sprite):
         if self.frame_index > len(animation):
             if self.status == 'Attack1' or self.status == 'Attack2':
                 self.attack_bool = False
+            elif self.status == 'Take hit':
+                self.taking_dmg = False
             self.frame_index = 0
         
         image = animation[int(self.frame_index)]
@@ -117,14 +123,14 @@ class Player(pygame.sprite.Sprite):
         if self.onright:
             self.image = pygame.transform.rotate(image, -240)
         elif self.onleft:
-            image = pygame.transform.rotate(image, 240)
+            image = pygame.transform.rotate(image, -60)
             self.image = pygame.transform.flip(image, False, True)
     
     def out_of_bounds(self):
         if self.rect.top > screen_height:
             self.actual_health-=2
 
-    
+   
     def update(self):
         # metodo para atualizar o player
         self.get_input()
@@ -139,4 +145,4 @@ class Player(pygame.sprite.Sprite):
             self.stamina+=0.01
         if self.actual_health<0:
             self.death = True
-            
+
