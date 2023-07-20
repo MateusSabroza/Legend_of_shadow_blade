@@ -115,7 +115,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(image, True, False)
         if self.onright:
-            self.image = pygame.transform.rotate(image, 60)
+            self.image = pygame.transform.rotate(image, -240)
         elif self.onleft:
             image = pygame.transform.rotate(image, 240)
             self.image = pygame.transform.flip(image, False, True)
