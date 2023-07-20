@@ -18,8 +18,7 @@ background = pygame.transform.scale(pygame.image.load(
 BG = pygame.transform.scale(pygame.image.load(
     "graphics/Background1.jpeg").convert(), (screen_width_v, screen_height_v))
 lista_de_mortes = ['Foi pro vasco!','Foi de arrasta!','Foi de americanas!','Foi de rainha Elizabeth!',
-                   'Wasted', 'Se fudeu!','Reprovou em cálculo 1!']
-
+                   'Wasted', 'Se fudeu!','Reprovou em Calculo 1!']
 # button setup
 
 
@@ -59,12 +58,10 @@ class Button():
             self.text = self.font.render(
                 self.text_input, True, self.base_color)
 
-# game loop
-
 
 def play():
     clock = pygame.time.Clock()
-
+    fim = 0
     while True:
         screen.fill("black")
         screen.blit(background, (0, 0))
@@ -79,13 +76,23 @@ def play():
                     main_menu()
         if level.death:
             after_life()
-                
-                    
+        if len(level.enemies)==0:
+            fim+=1
+            MENU_TEXT = get_font(200).render('GG!', True, "#000080")
+            MENU_RECT = MENU_TEXT.get_rect(center=(645, 150))
+            screen.blit(MENU_TEXT, MENU_RECT)
+        if fim>FPS:
+            MENU_TEXT = get_font(60).render('Thanks for playing!!', True, "#000080")
+            MENU_RECT = MENU_TEXT.get_rect(center=(600, screen_height_v/2))
+            screen.blit(MENU_TEXT, MENU_RECT)
+        if fim>3*FPS:
+            win()
+        
         pygame.display.update()
         clock.tick(FPS)
 
 def after_life():
-    frase = lista_de_mortes[random.randint(0,len(lista_de_mortes)-1)]
+    frase = lista_de_mortes[random.randint(0,len(lista_de_mortes))]
     screen.fill('black')
     while True:
         screen.blit(BG, (0,0))
@@ -93,7 +100,7 @@ def after_life():
         QUIT_BUTTON = Button(image=pygame.image.load(
             "graphics/Rect.png"), pos=(520, 650), text_input="QUIT")
         MENU_TEXT = get_font(50).render(frase, True, "#ff1900")
-        MENU_RECT = MENU_TEXT.get_rect(center=(645, 80))
+        MENU_RECT = MENU_TEXT.get_rect(center=(screen_width_v/2, 50))
         screen.blit(MENU_TEXT, MENU_RECT)
         QUIT_BUTTON.changeColor(MENU_MOUSE_POS)
         QUIT_BUTTON.update(screen)
@@ -107,6 +114,33 @@ def after_life():
                     exit()
         pygame.display.update()
 
+def win():
+    screen.fill('black')
+    timer = 0
+    while True:
+        timer+=1
+        screen.blit(BG, (0,0))
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        QUIT_BUTTON = Button(image=pygame.image.load(
+            "graphics/Rect.png"), pos=(520, 650), text_input="QUIT")
+        MENU_TEXT = get_font(50).render('Fala que nao merece o 10!', True, "red")
+        MENU_RECT = MENU_TEXT.get_rect(center=(620, 80))
+        screen.blit(MENU_TEXT, MENU_RECT)
+        QUIT_BUTTON.changeColor(MENU_MOUSE_POS)
+        QUIT_BUTTON.update(screen)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    exit()
+        if timer>4*FPS:
+            MENU_TEXT = get_font(170).render('EXQUEECE', True, "red")
+            MENU_RECT = MENU_TEXT.get_rect(center=(screen_width_v/2, screen_height_v/2))
+            screen.blit(MENU_TEXT, MENU_RECT)
+        pygame.display.update()
 
 def main_menu():
     while True:
@@ -135,6 +169,4 @@ def main_menu():
 
         pygame.display.update()
 
-
 main_menu()
-
