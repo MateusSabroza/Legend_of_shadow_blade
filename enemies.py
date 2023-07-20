@@ -17,6 +17,7 @@ class Enemy(pygame.sprite.Sprite):
         self.gravity = 0.6
         self.status = 'Idle'
         self.attack_bool = False
+        self.health = 10 
         
     def import_character_assets(self):
         character_path = 'graphics//Enemies//enemy//'
@@ -34,10 +35,12 @@ class Enemy(pygame.sprite.Sprite):
     def move(self):
         self.apply_gravity()
         if self.status=='Idle':
-            if random.randint(0,30)==2:
-                self.direction*=-1
-    
+            if random.randint(1,5)>3:
+                self.direction.x*=-1
+        self.rect.x+=self.direction.x
+        self.rect.y+=self.direction.y
+        
     def update(self, x_shift):
         self.rect.x += x_shift
         self.move()
-                
+    
