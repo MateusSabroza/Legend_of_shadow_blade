@@ -46,6 +46,7 @@ class Enemy(pygame.sprite.Sprite):
             self.attack_time += 1 
         if distância<self.follow_dist:
             self.follow_player(player)
+        else: self.follow = False
     
     def follow_player(self, player):
         self.follow = True
