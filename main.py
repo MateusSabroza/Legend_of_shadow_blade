@@ -85,7 +85,7 @@ def play():
         clock.tick(FPS)
 
 def after_life():
-    frase = lista_de_mortes[random.randint(0,len(lista_de_mortes))]
+    frase = lista_de_mortes[random.randint(0,len(lista_de_mortes)-1)]
     screen.fill('black')
     while True:
         screen.blit(BG, (0,0))
