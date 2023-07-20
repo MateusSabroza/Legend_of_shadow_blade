@@ -67,7 +67,7 @@ class Player(pygame.sprite.Sprite):
             self.jump_time += 1
             if self.jump_time < 5 and self.climb_time<3: #define o tempo de pulo e escalada maximo do player
                 self.jump()
-        if key[pygame.K_KP_ENTER] and not(self.attack_bool) and self.stamina>0:
+        if key[pygame.K_KP_ENTER] and not(self.attack_bool) and self.stamina>=1:
             self.attack()
         if key[pygame.K_i]:
             self.actual_health = -1
@@ -115,7 +115,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = pygame.transform.flip(image, True, False)
         if self.onright:
-            self.image = pygame.transform.rotate(image, 60)
+            self.image = pygame.transform.rotate(image, -240)
         elif self.onleft:
             image = pygame.transform.rotate(image, 240)
             self.image = pygame.transform.flip(image, False, True)
