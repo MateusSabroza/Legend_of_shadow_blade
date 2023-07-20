@@ -2,7 +2,7 @@ import pygame
 from tiles import Tile
 from settings import tile_size, screen_width, screen_height
 from player import Player
-from enemy import Enemy
+from enemies import Enemy
 screen_width_v = 1200
 
 class Level:
