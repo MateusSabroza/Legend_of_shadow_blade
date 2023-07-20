@@ -1,5 +1,5 @@
 import pygame
-import sys
+from sys import exit
 from settings import *
 from os import walk
 
@@ -38,7 +38,10 @@ class Player(pygame.sprite.Sprite):
         self.death = False
         self.attack_time = 0
         self.attack_bool = False
-        self.stamina = 3
+        self.max_stamina = 3
+        self.stamina = self.max_stamina
+        self.max_health = 100
+        self.actual_health = self.max_health
         
     def import_character_assets(self):
         character_path = 'graphics//hero//Martial Hero 2.0//'
@@ -66,6 +69,8 @@ class Player(pygame.sprite.Sprite):
                 self.jump()
         if key[pygame.K_KP_ENTER] and not(self.attack_bool) and self.stamina>0:
             self.attack()
+        if key[pygame.K_i]:
+            self.actual_health = -1
 
     def apply_gravity(self):
         # metodo para aplicar a gravidade
@@ -117,8 +122,8 @@ class Player(pygame.sprite.Sprite):
     
     def out_of_bounds(self):
         if self.rect.top > screen_height:
-            self.player_death = True
-    
+            self.actual_health-=2
+
     
     def update(self):
         # metodo para atualizar o player
@@ -128,8 +133,10 @@ class Player(pygame.sprite.Sprite):
         if self.jump_time>1:
             self.onleft = False
             self.onright = False 
-        if self.stamina<4:    
+        if self.stamina<0:
+            self.stamina = 0
+        if self.stamina<self.max_stamina:    
             self.stamina+=0.01
-
-
-
+        if self.actual_health<0:
+            self.death = True
+            
