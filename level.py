@@ -2,6 +2,7 @@ import pygame
 from tiles import Tile
 from settings import tile_size, screen_width, screen_height
 from player import Player
+from enemy import Enemy
 screen_width_v = 1200
 
 class Level:
@@ -15,6 +16,7 @@ class Level:
     def setup_level(self, layout):
         self.tiles = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
+        self.enemies = pygame.sprite.Group()
         for row_index, row in enumerate(layout):
             for col_index, cell in enumerate(row):
                 x = col_index*tile_size
@@ -25,6 +27,9 @@ class Level:
                 if cell == "P":
                     player_sprite = Player((x, y))
                     self.player.add(player_sprite)
+                if cell == "I":
+                    enemy_sprite = Enemy((x, y))
+                    self.enemies.add(enemy_sprite)                    
 
     def scroll_x(self):
         player = self.player.sprite
@@ -80,6 +85,18 @@ class Level:
                     player.jump_time = 0
                     player.climb_time = 0
                     player.direction.y = 0
+    
+    def collision_enemy(self):
+        player = self.player.sprite
+        for enemy in self.enemies:
+            if enemy.rect.colliderect(player.rect):
+                if player.attack_bool and not(enemy.attack_bool):
+                    enemy.health = -1
+                else:
+                    player.take_dmg()
+        if player.death:
+            self.death = True
+    
 
     def show_health_stamina(self, x, y, surface):
         player = self.player.sprite
@@ -97,8 +114,6 @@ class Level:
         # Draw the current health level (green color)
         pygame.draw.rect(surface, (0, 255, 0), (x, y, health_bar_width, bar_height))
         pygame.draw.rect(surface, (0, 0, 255), (x, y+bar_height, stamina_bar_width, bar_height))
-        if player.death:
-            self.death = True
     
     def run(self):
         # atualiza a posição do tile no eixo x
@@ -107,8 +122,12 @@ class Level:
         self.scroll_x()
         # parte do player
         self.player.update()
+        self.enemies.update(self.world_shift)
         # chamado dos metodos de colisao
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
+        self.collision_enemy()
+        # desenhar as barras e o inimigo
         self.show_health_stamina(10,50,self.display_surface)
         self.player.draw(self.display_surface)
+        self.enemies.draw(self.display_surface)
