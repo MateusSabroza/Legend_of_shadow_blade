@@ -38,7 +38,7 @@ class Player(pygame.sprite.Sprite):
         self.attack_bool = False
         self.max_stamina = 3
         self.stamina = self.max_stamina
-        self.max_health = 100
+        self.max_health = 60
         self.actual_health = self.max_health
         self.taking_dmg = False
         
