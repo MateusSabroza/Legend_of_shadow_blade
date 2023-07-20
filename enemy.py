@@ -21,6 +21,7 @@ class Enemy(pygame.sprite.Sprite):
         self.health = 10 
         self.faceright = True
         self.attack_dist = 100
+        self.attack_time = 0
         
     def import_character_assets(self):
         character_path = 'graphics//Enemies//enemy//'
@@ -36,8 +37,17 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y += self.direction.y
         
     def hit(self, player):
-        distância = 
-    
+        distância = ((player.rect.x - self.rect.x)**2 + (player.rect.y-self.rect.y)**2)**(0.5)
+        if distância<=self.attack_dist and self.attack_time==0:
+            self.attack_bool = True
+            self.attack_time += 1
+        
+    def cooldown(self):
+        if 0<self.attack_time<=110:
+            self.attack_time+=1 
+        elif self.attack_time > 110:
+            self.attack_time = 0
+            
     def get_status(self):
         if self.attack_bool:
             self.status = "Attack1"
@@ -77,3 +87,6 @@ class Enemy(pygame.sprite.Sprite):
         self.move()
         self.animate()
         self.hit(player)
+        self.cooldown()
+        if self.rect.top>screen_height:
+            self.kill()
