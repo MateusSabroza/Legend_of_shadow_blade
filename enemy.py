@@ -51,7 +51,9 @@ class Enemy(pygame.sprite.Sprite):
     def get_status(self):
         if self.attack_bool:
             self.status = "Attack1"
-        elif self.direction.x!=0: 
+        elif self.direction.y>0:
+            self.status = "Fall"
+        elif self.direction.x!=0:    
             self.status = 'Run'
         else:
             self.status = "Idle"
@@ -72,7 +74,6 @@ class Enemy(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(image, True, False)
             
     def move(self):
-        self.apply_gravity()
         if random.randint(1,30)==1:
             self.direction.x*=-1
         if self.direction.x<0:
@@ -89,4 +90,4 @@ class Enemy(pygame.sprite.Sprite):
         self.hit(player)
         self.cooldown()
         if self.rect.top>screen_height:
-            self.kill()
+            self.kill() 
