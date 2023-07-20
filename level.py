@@ -1,5 +1,5 @@
 import pygame
-from tiles import Tile
+from tiles import Tile, Inv_Wall
 from settings import tile_size, screen_width, screen_height
 from player import Player
 from enemy import Enemy
@@ -17,6 +17,7 @@ class Level:
         self.tiles = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
         self.enemies = pygame.sprite.Group()
+        self.inv_wall = pygame.sprite.Group()
         for row_index, row in enumerate(layout):
             for col_index, cell in enumerate(row):
                 x = col_index*tile_size
@@ -29,7 +30,11 @@ class Level:
                     self.player.add(player_sprite)
                 if cell == "I":
                     enemy_sprite = Enemy((x, y))
-                    self.enemies.add(enemy_sprite)             
+                    self.enemies.add(enemy_sprite)   
+                if cell == "A":
+                    wall = Inv_Wall((x,y), tile_size)
+                    self.inv_wall.add(wall)
+                    
 
     def scroll_x(self):
         player = self.player.sprite
@@ -93,6 +98,9 @@ class Level:
                 if sprite.rect.colliderect(enemy.rect):
                     enemy.rect.bottom = sprite.rect.top
                     enemy.direction.y = 0
+            for wall in self.inv_wall.sprites():
+                if wall.rect.colliderect(enemy.rect):
+                    enemy.direction.x*=-1
     
     def collision_enemy(self):
         player = self.player.sprite
@@ -128,6 +136,7 @@ class Level:
         # atualiza a posição do tile no eixo x
         self.tiles.update(self.world_shift)
         self.tiles.draw(self.display_surface)
+        self.inv_wall.update(self.world_shift)
         self.scroll_x()
         # parte do player
         self.player.update()
