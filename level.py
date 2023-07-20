@@ -29,7 +29,7 @@ class Level:
                     self.player.add(player_sprite)
                 if cell == "I":
                     enemy_sprite = Enemy((x, y))
-                    self.enemies.add(enemy_sprite)                    
+                    self.enemies.add(enemy_sprite)             
 
     def scroll_x(self):
         player = self.player.sprite
@@ -97,10 +97,11 @@ class Level:
     def collision_enemy(self):
         player = self.player.sprite
         for enemy in self.enemies:
+            enemy.apply_gravity()
             if enemy.rect.colliderect(player.rect):
                 if player.attack_bool and not(enemy.attack_bool):
                     enemy.kill()
-                else:
+                elif not(player.attack_bool) and enemy.attack_bool:
                     player.take_dmg()
         if player.death:
             self.death = True
@@ -130,7 +131,7 @@ class Level:
         self.scroll_x()
         # parte do player
         self.player.update()
-        self.enemies.update(self.world_shift)
+        self.enemies.update(self.world_shift,self.player.sprite)
         # chamado dos metodos de colisao
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
