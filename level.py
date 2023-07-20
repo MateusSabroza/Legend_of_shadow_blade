@@ -85,13 +85,21 @@ class Level:
                     player.jump_time = 0
                     player.climb_time = 0
                     player.direction.y = 0
+                    
+    def vertical_movement_collision_enemy(self):
+        for enemy in self.enemies:
+            for sprite in self.tiles.sprites():
+                # checa se o player colidiu com algum tile
+                if sprite.rect.colliderect(enemy.rect):
+                    enemy.rect.bottom = sprite.rect.top
+                    enemy.direction.y = 0
     
     def collision_enemy(self):
         player = self.player.sprite
         for enemy in self.enemies:
             if enemy.rect.colliderect(player.rect):
                 if player.attack_bool and not(enemy.attack_bool):
-                    enemy.health = -1
+                    enemy.kill()
                 else:
                     player.take_dmg()
         if player.death:
@@ -127,6 +135,7 @@ class Level:
         self.horizontal_movement_collision()
         self.vertical_movement_collision()
         self.collision_enemy()
+        self.vertical_movement_collision_enemy()
         # desenhar as barras e o inimigo
         self.show_health_stamina(10,50,self.display_surface)
         self.player.draw(self.display_surface)
